@@ -1,5 +1,6 @@
 "use server";
 
+import { baseUrl } from "@/lib/baseUrl";
 import stripe from "@/lib/stripe";
 import { Address } from "@/sanity.types";
 import { urlFor } from "@/sanity/lib/image";
@@ -24,7 +25,6 @@ export async function createCheckoutSession(
   metadata: Metadata
 ) {
   try {
-    
     // Retrieve existing customer or create a new one
     const customers = await stripe.customers.list({
       email: metadata.customerEmail,
@@ -33,7 +33,6 @@ export async function createCheckoutSession(
     const customerId = customers?.data?.length > 0 ? customers.data[0].id : "";
 
     const sessionPayload: Stripe.Checkout.SessionCreateParams = {
-      
       metadata: {
         orderNumber: metadata.orderNumber,
         customerName: metadata.customerName,
@@ -48,10 +47,12 @@ export async function createCheckoutSession(
         enabled: true,
       },
       locale: "en",
-      success_url: `${
-        process.env.NEXT_PUBLIC_BASE_URL
-      }/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
+      // success_url: `${
+      //   process.env.NEXT_PUBLIC_BASE_URL
+      // }/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      // cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
+      cancel_url: `${baseUrl}/cart`,
       line_items: items?.map((item) => ({
         price_data: {
           currency: "USD",
