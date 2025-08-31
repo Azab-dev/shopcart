@@ -45,13 +45,10 @@ export async function createCheckoutSession(
       invoice_creation: {
         enabled: true,
       },
-      locale: "en",
       success_url: `${
         process.env.NEXT_PUBLIC_BASE_URL
       }/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cart`,
-      // success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}&orderNumber=${metadata.orderNumber}`,
-      // cancel_url: `${baseUrl}/cart`,
       line_items: items?.map((item) => ({
         price_data: {
           currency: "USD",
